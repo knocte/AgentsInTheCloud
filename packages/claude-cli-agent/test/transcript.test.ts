@@ -47,7 +47,7 @@ test("serves a nested tool-result image through the transcript image route's sou
   const previous = process.env.ATELIER_DATA_DIR;
   process.env.ATELIER_DATA_DIR = root;
   try {
-    const path = join(root, "home/.claude/projects/-work/session.jsonl");
+    const path = join(root, "workspaces/workspace/home-local/.claude/projects/-work/session.jsonl");
     await mkdir(dirname(path), { recursive: true });
     await writeFile(path, row("r", null, "user", [{ type: "tool_result", tool_use_id: "call", content: [{ type: "image", source: { type: "base64", media_type: "image/png", data: "aGVsbG8=" } }] }]));
     const response = await loadClaudeTranscriptImage("workspace", "session", "r", 0);

@@ -65,7 +65,7 @@ test("workspaces share home but isolate application state with Docker-host paths
   const [first, second] = await Promise.all([workspaceHomeMounts("first"), workspaceHomeMounts("second")]);
   expect(first[0]).toEqual({ type: "bind", source: "/host/agents-in-the-cloud-data/home", target: "/home/agents-in-the-cloud" });
   expect(second[0]).toEqual(first[0]);
-  for (const [index, path] of [".local/share", ".local/state", ".cache"].entries()) {
+  for (const [index, path] of [".local/share", ".local/state", ".cache", ".claude/projects"].entries()) {
     expect(first[index + 1]).toEqual({ type: "bind", source: "/host/agents-in-the-cloud-data/workspaces/first/home-local/" + path, target: "/home/agents-in-the-cloud/" + path });
     expect(second[index + 1].source).toBe("/host/agents-in-the-cloud-data/workspaces/second/home-local/" + path);
     expect((await stat(join(directory, "workspaces/first/home-local", path))).mode & 0o777).toBe(0o700);

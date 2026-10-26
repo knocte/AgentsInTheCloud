@@ -17,7 +17,7 @@ export const agentsInTheCloudServerModule = createCliAgentModule({
   prepareWorkspace: async (workspaceId) => installSubscriptionCli(workspaceId, await createPiModelRuntime()),
   prepareSession: prepareClaudeSession,
   launchScript: claudeLaunchScript,
-  resumeScript: async (_workspaceId, settings, session) => claudeLaunchScript(emptyAgentInput(), [], settings, session, await hasClaudeSession(session.id)),
+  resumeScript: async (workspaceId, settings, session) => claudeLaunchScript(emptyAgentInput(), [], settings, session, await hasClaudeSession(workspaceId, session.id)),
   loadTranscript: loadClaudeTranscript,
   loadTranscriptImage: loadClaudeTranscriptImage,
   turnSettled: hasClaudeTurnSettled,

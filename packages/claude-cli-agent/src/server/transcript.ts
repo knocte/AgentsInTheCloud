@@ -115,21 +115,21 @@ export function claudeTurnSettled(jsonl: string): boolean {
   return settled;
 }
 
-function nativeSessionPath(sessionId: string): string {
-  return join(getAgentsInTheCloudRuntimeContext().agentsInTheCloudDataDir, "home", ".claude", "projects", workspaceRoot.replaceAll("/", "-"), `${sessionId}.jsonl`);
+function nativeSessionPath(workspaceId: string, sessionId: string): string {
+  return join(getAgentsInTheCloudRuntimeContext().agentsInTheCloudDataDir, "workspaces", workspaceId, "home-local", ".claude", "projects", workspaceRoot.replaceAll("/", "-"), `${sessionId}.jsonl`);
 }
-export async function loadClaudeTranscript(_workspaceId: string, sessionId: string): Promise<TranscriptRecord[] | undefined> {
-  const text = await readTextIfExists(nativeSessionPath(sessionId));
+export async function loadClaudeTranscript(workspaceId: string, sessionId: string): Promise<TranscriptRecord[] | undefined> {
+  const text = await readTextIfExists(nativeSessionPath(workspaceId, sessionId));
   return text === undefined ? undefined : claudeTranscriptRecords(text);
 }
 
-export async function hasClaudeTurnSettled(_workspaceId: string, sessionId: string): Promise<boolean> {
-  const text = await readTextIfExists(nativeSessionPath(sessionId));
+export async function hasClaudeTurnSettled(workspaceId: string, sessionId: string): Promise<boolean> {
+  const text = await readTextIfExists(nativeSessionPath(workspaceId, sessionId));
   return text !== undefined && claudeTurnSettled(text);
 }
 
-export async function loadClaudeTranscriptImage(_workspaceId: string, sessionId: string, entryId: string, contentIndex: number): Promise<Response> {
-  const text = await readTextIfExists(nativeSessionPath(sessionId));
+export async function loadClaudeTranscriptImage(workspaceId: string, sessionId: string, entryId: string, contentIndex: number): Promise<Response> {
+  const text = await readTextIfExists(nativeSessionPath(workspaceId, sessionId));
   if (text === undefined) return new Response("Not found", { status: 404 });
   for (const row of nativeJsonlRows(text, rowSchema)) {
     if (row.uuid !== entryId || !row.message || !Array.isArray(row.message.content)) continue;
@@ -140,11 +140,11 @@ export async function loadClaudeTranscriptImage(_workspaceId: string, sessionId:
   return new Response("Not found", { status: 404 });
 }
 
-export async function claudeHistoryFiles(_workspaceId: string, sessionId: string): Promise<string[]> {
-  const path = nativeSessionPath(sessionId);
+export async function claudeHistoryFiles(workspaceId: string, sessionId: string): Promise<string[]> {
+  const path = nativeSessionPath(workspaceId, sessionId);
   return await Bun.file(path).exists() ? [path] : [];
 }
 
-export async function hasClaudeSession(sessionId: string): Promise<boolean> {
-  return Bun.file(nativeSessionPath(sessionId)).exists();
+export async function hasClaudeSession(workspaceId: string, sessionId: string): Promise<boolean> {
+  return Bun.file(nativeSessionPath(workspaceId, sessionId)).exists();
 }

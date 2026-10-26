@@ -43,9 +43,9 @@ test("exports native Pi and Codex CLI sessions beside built-in sessions, without
   expect(await Bun.file(join(shared, "pi--named-task--workspace--tab--native-pi.jsonl")).text()).toBe("pi turn 1\npi turn 2\n");
 });
 
-test("exports only Claude's session ID from the shared home", async () => {
+test("exports only Claude's session ID from the workspace home", async () => {
   const root = await setup();
-  const home = join(root, "home", ".claude", "projects", "-work");
+  const home = join(root, "workspaces", "workspace", "home-local", ".claude", "projects", "-work");
   await source(join(home, "tab.jsonl"), "correct\n");
   await source(join(home, "other.jsonl"), "unrelated\n");
   await exportCliHistory("workspace", "claude", "tab", "named-task", await claudeHistoryFiles("workspace", "tab"));

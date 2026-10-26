@@ -40,7 +40,8 @@ export async function workspaceHomeMounts(workspaceId: string): Promise<Workspac
   await ensureSharedHome();
   const runtime = getAgentsInTheCloudRuntimeContext();
   const mounts: WorkspaceDockerMount[] = [{ type: "bind", source: dockerHostAgentsInTheCloudDataPath(runtime, "home"), target: "/home/agents-in-the-cloud" }];
-  for (const path of [".local/share", ".local/state", ".cache"]) {
+  // Claude Code keys transcripts and auto-memory by cwd, and every workspace runs in /work.
+  for (const path of [".local/share", ".local/state", ".cache", ".claude/projects"]) {
     // Pre-create mountpoints as the host user, not as Docker's root user.
     await mkdir(agentsInTheCloudDataPath(runtime, "home", path), { recursive: true });
     await mkdir(agentsInTheCloudDataPath(runtime, "workspaces", workspaceId, "home-local", path), { recursive: true, mode: 0o700 });
